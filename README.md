@@ -8,17 +8,18 @@ Jioh L. Jung
 
 # usage
 ```
-docker build -t simple-flask-echo-server .
-docker run -d -p 8080:8080  simple-flask-echo-server
+docker build -t simple-flask-test-server .
+docker run -d -p 8080:8080  simple-flask-test-server
 ```
 
 # URLS
 
 ```
 / : return headers and hostname
-
 /burn-cpu /stop-cpu : Burnin test for CPU (start and stop)
 /burn-mem /stop-mem : Burnin test for memory (start and stop)
+/env : get environ (injected key-values)
+/exit : force exit server
 
 ```
 
