@@ -11,6 +11,9 @@ Jioh L. Jung
 docker build -t simple-flask-test-server .
 docker run -d -p 8080:8080  simple-flask-test-server
 ```
+- environments
+ - MEM_PERCENT: memory burn rate(int percent/default: 60)
+
 
 # URLS
 
@@ -18,6 +21,7 @@ docker run -d -p 8080:8080  simple-flask-test-server
 / : return headers and hostname
 /burn-cpu /stop-cpu : Burnin test for CPU (start and stop)
 /burn-mem /stop-mem : Burnin test for memory (start and stop)
+/set-mem/<percent> : set burnin test for memory rate(percent/default: 60)
 /env : get environ (injected key-values)
 /exit : force exit server
 

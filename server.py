@@ -19,8 +19,12 @@ app = flask.Flask(__name__)
 #- Set default object ---------------------------------------------------------
 stop_cpu_flag, stop_mem_flag = True, True
 mem_holder = ''
+mem_percent = 60
+if 'MEM_PERCENT' in os.environ:
+    mem_percent = int(os.environ['MEM_PERCENT'])
 
 thread_pool = []
+
 
 #- Define Functions -----------------------------------------------------------
 def caclulate_pi(cnt=1000000):
@@ -87,16 +91,15 @@ class BurninTestCPU(threading.Thread):
 # Memory Burnin Test
 # Issue: Memory burnin test support has issue about OOM killer.
 class BurninTestMem(threading.Thread):
-    def __init__(self, mem_size, percent=0.9):
+    def __init__(self, mem_size):
         threading.Thread.__init__(self) 
         self.shutdown_flag = threading.Event()
         self.mem_size = mem_size
-        self.percent = percent
  
     def run(self):
-        global mem_holder
+        global mem_holder, mem_percent
         while not self.shutdown_flag.is_set():
-            mem_holder = get_memory_allocator(int(self.mem_size * self.percent))
+            mem_holder = get_memory_allocator(int(self.mem_size * (mem_percent/100)))
  
 #- Set Flask Routes -----------------------------------------------------------
 @app.route('/')
@@ -123,7 +126,11 @@ def index():
     
     # Get System IP address
     #ip_host = os.popen('hostname -I').read()
-    ip_host = socket.gethostbyname(socket.gethostname())
+    ip_host = ''
+    try:
+        ip_host = socket.gethostbyname(socket.gethostname())
+    except:
+        pass
     return f'''
 <pre>
 Request received at {time_string}
@@ -138,6 +145,7 @@ Headers
 System Status
 > CPU Usage: {cpu_usage}%
 > RAM Usage: {ram_usage}%
+> RAM BURN Level: {mem_percent}%
 
 </pre>
 
@@ -168,6 +176,16 @@ def stop_mem():
     global stop_mem_flag
     stop_mem_flag = True
     return 'Burn Memory stopped'
+
+
+@app.route('/set-mem/<percent>')
+def set_mem(percent):
+    global mem_percent
+    if int(percent) >= 0:
+        mem_percent = int(percent)
+        return f'Burn Memory Percent: {mem_percent}%'
+    else:
+        return f'Error percent value: {mem_percent}'
 
 @app.route('/exit')
 def exit_app():
