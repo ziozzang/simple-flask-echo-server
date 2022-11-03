@@ -1,0 +1,13 @@
+#Alpine based (for minimized container image size)
+FROM alpine
+
+RUN apk add py3-pip py3-psutil && \
+    pip install flask && \
+	rm -rf /var/cache/apk/*
+
+COPY *.py /opt/
+
+EXPOSE 8080
+WORKDIR /opt/
+
+CMD python3 server.py
