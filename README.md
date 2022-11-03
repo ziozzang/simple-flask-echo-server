@@ -1,9 +1,10 @@
-# simple-flask-echo-server
+# simple-flask-test-server
 
 based for container/kubernetes testing purpose. (auto-scaling or....)
 
 # Author
-Jioh L. Jung <ziozzang at gmail.com>
+Jioh L. Jung
+- github.com/ziozzang
 
 # usage
 ```
