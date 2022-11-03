@@ -101,6 +101,11 @@ class BurninTestMem(threading.Thread):
         while not self.shutdown_flag.is_set():
             mem_holder = get_memory_allocator(int(self.mem_size * (mem_percent/100)))
  
+#- Get System information -----------------------------------------------------
+
+# Get hostname
+hostname = os.uname()[1]
+
 #- Set Flask Routes -----------------------------------------------------------
 @app.route('/')
 def index():
@@ -110,9 +115,6 @@ def index():
     
     # Get current time string
     time_string = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-    
-    # Get hostname
-    hostname = os.uname()[1]
     
     # Get Headers
     headers_string = ''
@@ -156,26 +158,26 @@ System Status
 def burn_cpu():
     global stop_cpu_flag
     stop_cpu_flag = False
-    return 'Burn CPU started'
+    return f'Burn CPU started ({hostname})'
 
 
 @app.route('/stop-cpu')
 def stop_cpu():
     global stop_cpu_flag
     stop_cpu_flag = True
-    return 'Burn CPU stopped'
+    return f'Burn CPU stopped ({hostname})'
 
 @app.route('/burn-mem')
 def burn_mem():
     global stop_mem_flag
     stop_mem_flag = False
-    return 'Burn Memory started'
+    return f'Burn Memory started ({hostname})'
 
 @app.route('/stop-mem')
 def stop_mem():
     global stop_mem_flag
     stop_mem_flag = True
-    return 'Burn Memory stopped'
+    return f'Burn Memory stopped ({hostname})'
 
 
 @app.route('/set-mem/<percent>')
@@ -183,9 +185,9 @@ def set_mem(percent):
     global mem_percent
     if int(percent) >= 0:
         mem_percent = int(percent)
-        return f'Burn Memory Percent: {mem_percent}%'
+        return f'Burn Memory Percent: {mem_percent}% ({hostname})'
     else:
-        return f'Error percent value: {mem_percent}'
+        return f'Error percent value: {mem_percent} ({hostname})'
 
 @app.route('/exit')
 def exit_app():
@@ -203,6 +205,8 @@ def env():
 <pre>
 Environment Variables
 {env_strs}
+
+Hostname: {hostname}
 </pre>
 '''
 
