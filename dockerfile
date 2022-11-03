@@ -1,6 +1,6 @@
 FROM python:3
 
-RUN pip install flask psutils
+RUN pip install flask psutil
 
 COPY *.py /opt/
 
